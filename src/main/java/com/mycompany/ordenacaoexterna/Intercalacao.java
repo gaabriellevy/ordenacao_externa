@@ -18,6 +18,7 @@ import java.util.Scanner;
 public class Intercalacao {
 
     public int countIntercalacoes;
+    ArrayList<MembroDaIntercalacao> arquivos = new ArrayList<MembroDaIntercalacao>();
 
     public Intercalacao() {
         this.countIntercalacoes = 1;
@@ -42,36 +43,45 @@ public class Intercalacao {
         int countArquivos = 1;
         int countArquivosTemporarios = 0;
         
-        ArrayList<MembroDaIntercalacao> arquivos = new ArrayList<MembroDaIntercalacao>();
-
         while(countArquivos <= numArquivos) {     
             
             int limite = countArquivos + 10;
-            for (int i = countArquivos; i < limite && i < numArquivos; i++) { // cria até 10 arquivos temporários
+            for (int i = countArquivos; i < limite && i < numArquivos; i++) { // instancia 10 arquivos temporários (ou até o último)
                 arquivos.add(new MembroDaIntercalacao("temp/temp"+i+".txt"));
                 
                 countArquivos++;
             }
-            
-            // cria o arquivo temporário para armazenar
-            File temp = new File("intercalacao"+countIntercalacoes+"/temp"+countArquivosTemporarios+".txt");
-            temp.createNewFile();
-            FileWriter tempWriter = new FileWriter(temp); // cria o escritor para o arquivo temporário
-            
-            while(arquivos.size() != 0) {
-                
-                MembroDaIntercalacao menor = Collections.min(arquivos);
-                
-                tempWriter.write(String.valueOf(menor.getNumero()));
-                
-                if(menor.getNumero() == -1) {
-                    menor.deleteFile();
-                    menor.getLeitor().close();
-                    arquivos.remove(menor);
-                }
-            }
+                        
+            intercalaNivel();
 
             countArquivosTemporarios++;
+        }
+    }
+
+    public void intercalaNivel() {
+        File path = new File("intercalacao");
+
+        // cria pasta onde os arquivos serão colocados
+        if (!path.exists()) {
+            path.mkdir();
+        }
+
+        // cria o arquivo temporário para armazenar este nível
+        File temp = new File("intercalacao"+countIntercalacoes+"/temp"+countArquivosTemporarios+".txt");
+        temp.createNewFile();
+        FileWriter tempWriter = new FileWriter(temp); // cria o escritor para o arquivo temporário
+
+        while(arquivos.size() != 0) {
+            
+            MembroDaIntercalacao menor = Collections.min(arquivos);
+            
+            tempWriter.write(String.valueOf(menor.getNumero()));
+            
+            if(menor.getNumero() == -1) {
+                menor.deleteFile();
+                menor.getLeitor().close();
+                arquivos.remove(menor);
+            }
         }
     }
         
