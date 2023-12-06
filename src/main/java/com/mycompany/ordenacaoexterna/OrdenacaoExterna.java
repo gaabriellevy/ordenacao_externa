@@ -15,5 +15,8 @@ public class OrdenacaoExterna {
     public static void main(String[] args) throws IOException {
         Leitor leitor = new Leitor();
         leitor.lerArquivo("ordExt_teste.txt");
+        
+        Intercalacao intercalacao = new Intercalacao();
+        intercalacao.intercalar();
     }
 }
