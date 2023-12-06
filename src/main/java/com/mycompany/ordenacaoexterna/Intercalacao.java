@@ -16,16 +16,35 @@ import java.util.Scanner;
  * @author aluno
  */
 public class Intercalacao {
-    
+
+    public int countIntercalacoes;
+
+    public Intercalacao() {
+        this.countIntercalacoes = 1;
+    }
+
     public void intercalar() throws IOException {
+        int numBlocos = 1;
+
+        while(numBlocos > 1) {
+            numBlocos = intercalaNiveis(numBlocos);
+            countIntercalacoes++;
+        }
+
+        if(numBlocos == 1) {
+            File arquivoFinal = new File("intercalacao"+countIntercalacoes+"/temp1.txt");
+        }
+    }
+
+    public int intercalaNiveis(int numBlocos) throws IOException {
         int numArquivos = numArquivos("temp");
             
         int countArquivos = 1;
-        int countArquivosTemporarios = 1;
+        int countArquivosTemporarios = 0;
         
         ArrayList<MembroDaIntercalacao> arquivos = new ArrayList<MembroDaIntercalacao>();
-            
-        while(countArquivos <= numArquivos) {
+
+        while(countArquivos <= numArquivos) {     
             
             int limite = countArquivos + 10;
             for (int i = countArquivos; i < limite && i < numArquivos; i++) { // cria até 10 arquivos temporários
@@ -35,7 +54,7 @@ public class Intercalacao {
             }
             
             // cria o arquivo temporário para armazenar
-            File temp = new File("intercalacao/temp"+countArquivosTemporarios+".txt");
+            File temp = new File("intercalacao"+countIntercalacoes+"/temp"+countArquivosTemporarios+".txt");
             temp.createNewFile();
             FileWriter tempWriter = new FileWriter(temp); // cria o escritor para o arquivo temporário
             
@@ -46,19 +65,13 @@ public class Intercalacao {
                 tempWriter.write(String.valueOf(menor.getNumero()));
                 
                 if(menor.getNumero() == -1) {
+                    menor.deleteFile();
                     menor.getLeitor().close();
                     arquivos.remove(menor);
                 }
-                
-                //Collections.min(numeros doubles)
-                // pega o menor do vetor de números
-                // escreve no novo arquivo
-                // next line no objeto de onde vc tirou menor numero, la dentro vc tem verificar se chegar ao final do arquivo, 
-                // se tiver chegado ao final do arquivo, retorna -1, remover o objeto de arquivos
             }
-            
+
             countArquivosTemporarios++;
-            
         }
     }
         
@@ -82,13 +95,15 @@ public class Intercalacao {
         private double numero;
 
         public double getNumero() {
-            return numero;
+            double numeroReturn = numero;
             
             if(leitor.hasNextLine()) {
                 this.numero = Double.parseDouble(leitor.nextLine());   
             }else {
                 this.numero = -1;
             }
+
+            return numeroReturn;
         }
 
         public void setNumero(double numero) {
@@ -110,8 +125,8 @@ public class Intercalacao {
             }
         }
         
-        public void getProximoNumero(){
-            
+        public void deleteFile(){
+            arquivo.delete();
         }
 
         @Override      
