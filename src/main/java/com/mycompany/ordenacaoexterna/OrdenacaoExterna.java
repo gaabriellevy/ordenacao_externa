@@ -16,7 +16,7 @@ public class OrdenacaoExterna {
         Leitor leitor = new Leitor();
         leitor.lerArquivo("ordExt_teste.txt");
         
-        Intercalacao intercalacao = new Intercalacao();
-        intercalacao.intercalar();
+        Intercalador intercalador = new Intercalador();
+//        intercalacao.intercalar();
     }
 }
