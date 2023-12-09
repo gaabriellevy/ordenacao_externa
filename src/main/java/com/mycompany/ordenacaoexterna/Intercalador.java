@@ -7,6 +7,10 @@ package com.mycompany.ordenacaoexterna;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
@@ -18,44 +22,87 @@ import java.util.Scanner;
 public class Intercalador {
     
     ArrayList<MembroDaIntercalacao> arquivos = new ArrayList<MembroDaIntercalacao>();
+    File origem;
+    File destino;
     
-    public Intercalador() throws IOException {
-   
-        //instancia 10 arquivos
-        for (int i = 1; i < 11; i++) {
-            arquivos.add(new MembroDaIntercalacao("temp/temp"+i+".txt"));
+    public String intercalar() throws IOException {
+                
+        int nivel = 0;
+                
+        origem = new File("temp0");
+        destino = new File("temp1");
+        
+        if (!destino.exists()) {
+            destino.mkdir();
         }
         
-        File path = new File("intercalacao1");
-
-        // cria pasta onde os arquivos serão colocados
-        if (!path.exists()) {
-            path.mkdir();
+        do{
+            origem = new File("temp"+nivel);
+            destino = new File("temp"+(nivel+1));
+        
+            // cria pasta onde os arquivos serão colocados
+            if (!destino.exists()) {
+                destino.mkdir();
+            }
+            
+            intercalaNivel();
+            
+            nivel++;
+            
+        }while(calculanumArquivos(destino.getPath()) > 1);
+        
+        return "temp"+nivel+"/temp0.txt";
+    }
+    
+    public void intercalaNivel() throws IOException {
+        int countBlocos = 0;
+        
+        while(calculanumArquivos(origem.getPath()) > 0) {
+            intercalaBloco(countBlocos);
+            countBlocos++;
         }
         
-        intercalaBloco(1);
+        origem.delete();
     }
     
     public void intercalaBloco(int numBloco) throws IOException {
-        // cria o arquivo temporário para armazenar este nível
-        File temp = new File("intercalacao1/temp"+numBloco+".txt");
-        temp.createNewFile();
-        FileWriter tempWriter = new FileWriter(temp); // cria o escritor para o arquivo temporário
+        //instancia 10 arquivos
         
-        while(!arquivos.isEmpty()) {
-            
-            MembroDaIntercalacao menor = Collections.min(arquivos);
-
-            tempWriter.write(String.valueOf(menor.getNumero()));
-            tempWriter.write("\n");
-            
-            if(menor.getNumero() == -1) {
-                System.out.println("Apagando "+menor.arquivo.getPath());
-                menor.deleteFile();
-                 menor.getLeitor().close();
-                 arquivos.remove(menor);      
+        int countTemps = numBloco*10;
+        
+        for (int i = numBloco*10; i < (numBloco*10)+10; i++) {
+            // se o arquivo existir, instancia no programa
+            File arquivo = new File(origem.getPath()+"/temp"+countTemps+".txt");
+            if(arquivo.isFile()) {
+                arquivos.add(new MembroDaIntercalacao(origem.getPath()+"/temp"+countTemps+".txt")); 
             }
+            
+            countTemps++;
         }
+                
+        if(!arquivos.isEmpty()) {
+            // cria o arquivo temporário para armazenar este nível
+            File temp = new File(destino.getPath()+"/temp"+numBloco+".txt");
+            temp.createNewFile();
+            FileWriter tempWriter = new FileWriter(temp); // cria o escritor para o arquivo temporário
+            
+            while(!arquivos.isEmpty()) {
+                MembroDaIntercalacao menor = Collections.min(arquivos);
+
+                tempWriter.write(String.valueOf(menor.getNumero()));
+                tempWriter.write("\n");
+
+                if(menor.getNumero() == -1) {
+                    menor.getLeitor().close();
+                    menor.deleteFile();
+                    arquivos.remove(menor);      
+                }
+            }
+            tempWriter.close();
+        }
+
+        
+        
     }
     
     public class MembroDaIntercalacao implements Comparable<MembroDaIntercalacao>{
@@ -94,9 +141,12 @@ public class Intercalador {
             }
         }
         
-        public void deleteFile(){
-            System.out.println(arquivo.getPath());
-            arquivo.delete();
+        public void deleteFile() {
+            try {
+                arquivo.delete();
+            } catch (SecurityException e) {
+                System.out.println("Erro de segurança ao excluir o arquivo: " + e.getMessage());
+            }
         }
 
         @Override      

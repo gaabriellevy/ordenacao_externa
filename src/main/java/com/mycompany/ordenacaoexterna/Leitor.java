@@ -22,7 +22,7 @@ public class Leitor {
   
     public void lerArquivo(String arquivo) throws IOException {
         try {
-            File path = new File("temp");
+            File path = new File("temp0");
 
             // cria pasta onde os arquivos serão colocados
             if (!path.exists()) {
@@ -32,7 +32,7 @@ public class Leitor {
             File file = new File(arquivo);
             Scanner in = new Scanner(file);
             
-            int numArquivo = 1; // conta o indice dos arquivos
+            int numArquivo = 0; // conta o indice dos arquivos
             
             while(in.hasNextLine()) { // lê as linha do arquivo
                 ArrayList<Double> linhas = new ArrayList();
@@ -44,7 +44,7 @@ public class Leitor {
                 
                 Collections.sort(linhas); // ordena os 100 elementos
                 
-                File temp = new File("temp/temp"+numArquivo+".txt"); // cria um arquivo temporário
+                File temp = new File("temp0/temp"+numArquivo+".txt"); // cria um arquivo temporário
                 FileWriter tempWriter = new FileWriter(temp); // cria o escritor para o arquivo temporário
 
                 for (int j = 0; j < linhas.size(); j++) { // escreve as linhas no arquivo temporário

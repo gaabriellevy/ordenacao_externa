@@ -4,7 +4,13 @@
 
 package com.mycompany.ordenacaoexterna;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Scanner;
 
 /**
  *
@@ -13,10 +19,33 @@ import java.io.IOException;
 public class OrdenacaoExterna {
 
     public static void main(String[] args) throws IOException {
+        System.out.print("Digite o caminho do arquivo: ");
+        
+        Scanner in = new Scanner(System.in);
+        String caminhoOriginal = in.next();
+        
+        in.close();
+        
         Leitor leitor = new Leitor();
-        leitor.lerArquivo("ordExt_teste.txt");
+        leitor.lerArquivo(caminhoOriginal);
         
         Intercalador intercalador = new Intercalador();
-//        intercalacao.intercalar();
+        String pathArquivoIntercalado = intercalador.intercalar();
+        
+        int ultimoIndiceBarra = caminhoOriginal.lastIndexOf('/');
+        String diretorioCaminhoOriginal = caminhoOriginal.substring(0, ultimoIndiceBarra + 1);
+        
+        ultimoIndiceBarra = pathArquivoIntercalado.lastIndexOf('/');
+        String caminhoDiretorioTemp = pathArquivoIntercalado.substring(0, ultimoIndiceBarra + 1);
+        File diretorioTemp = new File(caminhoDiretorioTemp);
+        
+        File origem = new File(pathArquivoIntercalado);
+        Path pathOrigem = Paths.get(pathArquivoIntercalado);
+        Path pathDestino = Paths.get(diretorioCaminhoOriginal+"ordenado.txt");
+        Files.move(pathOrigem, pathDestino, StandardCopyOption.REPLACE_EXISTING);
+        origem.delete();
+        diretorioTemp.delete();
+        
+        System.out.println("Seu arquivo foi ordenado e colocado na mesma pasta do arquivo de origem com o nome ordenado.txt");
     }
 }
