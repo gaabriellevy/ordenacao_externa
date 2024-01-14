@@ -9,7 +9,6 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,20 +34,20 @@ public class Leitor {
             int numArquivo = 0; // conta o indice dos arquivos
             
             while(in.hasNextLine()) { // lê as linha do arquivo
-                ArrayList<Double> linhas = new ArrayList();
+                double[] linhas = new double[1000];
 
-                for (int i = 0; i < 100 && in.hasNextLine(); i++) { // Insere 100 elementos na memória
+                for (int i = 0; i < 1000 && in.hasNextLine(); i++) { // Insere 100 elementos na memória
                     String linha = in.nextLine();
-                    linhas.add(Double.valueOf(linha));
+                    linhas[i] = Double.valueOf(linha);
                 }
                 
-                Collections.sort(linhas); // ordena os 100 elementos
+                HeapSort.heapSort(linhas); // ordena os 100 elementos
                 
                 File temp = new File("temp0/temp"+numArquivo+".txt"); // cria um arquivo temporário
                 FileWriter tempWriter = new FileWriter(temp); // cria o escritor para o arquivo temporário
 
-                for (int j = 0; j < linhas.size(); j++) { // escreve as linhas no arquivo temporário
-                    tempWriter.write(String.valueOf(linhas.get(j)));
+                for (int j = 0; j < linhas.length; j++) { // escreve as linhas no arquivo temporário
+                    tempWriter.write(String.valueOf(linhas[j]));
                     tempWriter.write("\n");
                 }
                 tempWriter.close();

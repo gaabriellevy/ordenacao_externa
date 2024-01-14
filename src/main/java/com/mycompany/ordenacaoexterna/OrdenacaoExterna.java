@@ -33,6 +33,8 @@ public class OrdenacaoExterna {
         String pathArquivoIntercalado = intercalador.intercalar();
         
         int ultimoIndiceBarra = caminhoOriginal.lastIndexOf('/');
+        System.out.println(caminhoOriginal);
+        System.out.println(ultimoIndiceBarra);
         String diretorioCaminhoOriginal = caminhoOriginal.substring(0, ultimoIndiceBarra + 1);
         
         ultimoIndiceBarra = pathArquivoIntercalado.lastIndexOf('/');
@@ -42,10 +44,13 @@ public class OrdenacaoExterna {
         File origem = new File(pathArquivoIntercalado);
         Path pathOrigem = Paths.get(pathArquivoIntercalado);
         Path pathDestino = Paths.get(diretorioCaminhoOriginal+"ordenado.txt");
+        System.out.println(diretorioCaminhoOriginal);
+        System.out.println(pathOrigem);
+        System.out.println(pathDestino);
         Files.move(pathOrigem, pathDestino, StandardCopyOption.REPLACE_EXISTING);
         origem.delete();
         diretorioTemp.delete();
         
-        System.out.println("Seu arquivo foi ordenado e colocado na mesma pasta do arquivo de origem com o nome ordenado.txt");
+        System.out.println("Seu arquivo foi ordenado e colocado na mesma pasta do arquivo de origem com o nome ordenado.txt");;
     }
 }
